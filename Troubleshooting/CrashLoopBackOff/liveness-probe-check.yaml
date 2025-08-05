@@ -1,0 +1,41 @@
+# In this example, NGINX runs properly, but the liveness probe points to /wrong-path,
+# which does not exist. As a result, Kubernetes repeatedly kills and restarts the container,
+# assuming it is unhealthy.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveness-fail-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: liveness-app
+  template:
+    metadata:
+      labels:
+        app: liveness-app
+    spec:
+      containers:
+        - name: demo-container
+          image: nginx
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /wrong-path
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+
+#Update the Update the liveness probe to point to a valid path.
+#NGINX serves /index.html at /, so change the probe like this:
+
+#livenessProbe:
+#  httpGet:
+#    path: /
+#    port: 80
+#  initialDelaySeconds: 5
+#  periodSeconds: 5
+
