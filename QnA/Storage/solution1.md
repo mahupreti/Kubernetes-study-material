@@ -87,3 +87,6 @@ Expected output:
 `Hello Persistent Storage`
 
 This confirms the volume is writable and mounted properly at /data.
+
+#### Remember
+Local-path storage class does NOT enforce storage limits - it's a known characteristic. When you request 200Mi in your PVC, you're essentially just declaring your intent, but the provisioner doesn't actually restrict the container to only use 200Mi.
