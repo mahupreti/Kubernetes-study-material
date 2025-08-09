@@ -25,43 +25,6 @@ sudo mkdir -p /opt/data
 sudo chmod 777 /opt/data
 ```
 
-###
-
-### Step 3  Create the PV
-
-We define a PV that uses the fast-storage StorageClass, stores data in /opt/data, and is bound to a specific node via node affinity.
-
-See the labels of the nodes
-
-`kubectl get nodes --show-labels`
-
-`vim pv.yaml`
-```yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: fast-pv
-spec:
-  capacity:
-    storage: 1Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: fast-storage
-  hostPath:
-    path: /opt/data
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - node01
-```
-
-Apply the pv file: `kubectl apply -f pv.yaml`
-
 ### Step 4 Create the PVC
 
 We request storage from the fast-storage class. Since the PV already exists and matches our request, the PVC will bind to it.
@@ -110,5 +73,5 @@ Expected Output:
 
 - StorageClass defines how volumes are provisioned and reclaimed.
 - PersistentVolume is created manually with a local path and node affinity so Kubernetes knows where to schedule pods using it.
-- PersistentVolumeClaim requests storage from the StorageClass and binds to the matching PV.
+- PersistentVolumeClaim requests storage from the StorageClass and gives the matching PV.
 - When the PVC is deleted, because the reclaim policy is Retain, Kubernetes does not delete the PV or its data; instead, the PV status changes to Released.
