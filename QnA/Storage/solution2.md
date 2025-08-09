@@ -48,7 +48,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: fast-storage
-  local:
+  hostPath:
     path: /opt/data
   nodeAffinity:
     required:
